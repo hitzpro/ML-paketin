@@ -1,22 +1,28 @@
-# Gunakan image Python yang ringan
+# Gunakan image Python
 FROM python:3.10-slim
 
-# Set working directory
+# Set folder kerja
 WORKDIR /app
 
-# Copy requirements dulu (agar cache layer optimal)
+# --- TAMBAHAN PENTING ---
+# Install library sistem yang dibutuhkan XGBoost/Scikit-learn
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+# ------------------------
+
+# Copy requirements dulu
 COPY requirements.txt .
 
-# Install dependencies
-# --no-cache-dir agar image kecil
+# Install library python
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy semua sisa file (model .joblib dan script)
+# Copy semua file project (termasuk .joblib)
 COPY . .
 
-# Expose port (Render biasanya baca env PORT, tapi kita set default 5000)
+# Expose port
 EXPOSE 5000
 
-# Perintah menjalankan server
-# Host 0.0.0.0 wajib untuk Docker
+# Jalankan aplikasi
 CMD ["uvicorn", "app_trans:app", "--host", "0.0.0.0", "--port", "5000"]
