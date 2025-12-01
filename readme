@@ -1,0 +1,86 @@
+# 🧠 Cara Kerja "AI Personalization" di Paketin
+
+Dokumen ini menjelaskan logika di balik fitur **"Rekomendasi Untukmu"**. Sistem ini tidak menampilkan produk secara acak, melainkan mempelajari perilaku pengguna untuk memberikan penawaran yang paling relevan.
+
+## 1. Filosofi Utama: "Hybrid Intelligence"
+
+Sistem kami menggabungkan dua jenis data untuk mengenali pengguna:
+1.  **Apa yang pengguna katakan** (Data Deklaratif dari Survei).
+2.  **Apa yang pengguna lakukan** (Data Perilaku Asli dari Transaksi & Favorit).
+
+Sistem ini bersifat **Adaptif**. Rekomendasi untuk pengguna baru akan berbeda dengan pengguna lama, dan akan terus berubah seiring dengan aktivitas belanja mereka.
+
+---
+
+## 2. Dari Mana Sistem Mendapat Data? (Input)
+
+AI kami membutuhkan "bahan bakar" berupa data profil pengguna. Data ini dikumpulkan dari 3 sumber utama:
+
+### A. Survei Onboarding (Untuk Pengguna Baru)
+Saat pengguna baru mendaftar, sistem belum tahu apa-apa. Oleh karena itu, kami bertanya langsung:
+* **Hobi/Penggunaan:** (Contoh: Gaming, Streaming, Kerja).
+    * *Logika:* Jika memilih "Gaming", sistem berasumsi butuh kuota besar. Jika "Kerja", butuh koneksi stabil.
+* **Budget:** (Contoh: Hemat, Sedang, Sultan).
+    * *Logika:* Menentukan kisaran harga produk yang akan ditampilkan.
+
+### B. Riwayat Transaksi (Fakta Paling Kuat)
+Apa yang dibeli pengguna adalah data paling jujur.
+* Jika pengguna mengaku "Hemat" di survei, tapi tiba-tiba membeli paket seharga **Rp 500.000**, sistem akan lebih mempercayai data transaksi.
+* Sistem menghitung **Rata-rata Pengeluaran** dan **Frekuensi Top-up** dari data ini.
+
+### C. Daftar Favorit (Minat)
+Produk yang disukai (Love/Wishlist) memberikan sinyal minat.
+* Jika pengguna sering menyukai produk kategori "Kuota Malam", sistem akan sedikit demi sedikit menggeser rekomendasi ke arah sana, meskipun pengguna belum membelinya.
+
+---
+
+## 3. Bagaimana Sistem Berpikir? (Proses)
+
+Setelah data terkumpul, "Otak" AI (Machine Learning) bekerja dengan langkah berikut:
+
+1.  **Pengumpulan Data (Aggregation):**
+    Sistem backend merangkum semua aktivitas user menjadi angka statistik.
+    > *Contoh: "User Budi rata-rata belanja Rp 50.000, suka main game, dan bulan ini sudah beli 2 kali."*
+
+2.  **Prediksi Kategori (Classification):**
+    Data statistik tersebut dikirim ke Model AI. Model ini sudah dilatih untuk mengelompokkan pengguna ke dalam **"Persona"** tertentu, seperti:
+    * **General User:** Pengguna rata-rata.
+    * **Data Booster:** Pengguna yang boros kuota (Gamer/Streamer).
+    * **Top-up Promo:** Pengguna irit yang butuh diskon.
+    * **High Value (Sultan):** Pengguna dengan daya beli tinggi.
+
+3.  **Pencocokan Produk:**
+    Setelah AI menentukan "Persona" pengguna (misal: *Data Booster*), sistem akan mencari di gudang produk mana saja yang berlabel *Data Booster*, lalu menampilkannya di halaman depan.
+
+---
+
+## 4. Kapan Rekomendasi Berubah? (Triggers)
+
+Rekomendasi tidak statis selamanya. Ia akan **berubah secara otomatis (Real-time Update)** pada momen-momen berikut:
+
+| Pemicu (Trigger) | Apa yang Terjadi? | Efek pada Rekomendasi |
+| :--- | :--- | :--- |
+| **Selesai Isi Survei** | Sistem mendapatkan data awal (Budget & Minat). | Langsung berubah dari kosong menjadi produk sesuai budget survei. |
+| **Pembayaran Sukses** | Sistem mendeteksi daya beli & kebiasaan belanja baru. | Jika belanja barang mahal, rekomendasi naik kelas (Upselling). |
+| **Like/Unline Produk** | Sistem mendeteksi ketertarikan spesifik. | Menyesuaikan jenis kuota yang sering dilihat/disukai. |
+
+---
+
+## 5. Contoh Skenario Nyata (User Journey)
+
+Mari kita lihat perjalanan pengguna bernama **Andi**.
+
+**Hari 1: Pendaftaran**
+* **Aksi:** Andi daftar & isi survei. Dia pilih hobi **"Chatting"** dan budget **"Hemat (< 50rb)"**.
+* **Respon AI:** AI melabeli Andi sebagai *"Top-up Promo"*.
+* **Tampilan:** Andi melihat rekomendasi **Pulsa 20rb** dan **Kuota Harian 2GB**.
+
+**Hari 7: Mendadak Sultan**
+* **Aksi:** Andi tiba-tiba butuh internet cepat dan membeli **"Paket Sultan 100GB"** seharga **Rp 150.000**.
+* **Respon AI:** Sistem mendeteksi lonjakan pengeluaran. Label Andi berubah dari *"Top-up Promo"* menjadi *"Data Booster"* atau *"High Value"*.
+* **Tampilan:** Saat Andi kembali ke Home, rekomendasi berubah menjadi **Paket 50GB** atau **Streaming Add-on**. Produk receh (20rb) tidak lagi diprioritaskan.
+
+---
+
+## Kesimpulan
+Sistem rekomendasi Paketin bukan sekadar fitur statis, melainkan **asisten cerdas** yang terus belajar dari dompet dan kebiasaan pengguna untuk menawarkan produk yang paling mungkin mereka beli.

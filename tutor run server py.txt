@@ -1,0 +1,6 @@
+.\venv\Scripts\activate
+
+uvicorn app_trans:app --reload --port 5000
+
+
+
